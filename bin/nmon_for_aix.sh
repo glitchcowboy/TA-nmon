@@ -28,6 +28,7 @@ WORKDIR=${SPL_HOME}/etc/apps/nmon/var/nmon_temp
 # Nmon file final destination
 # Default to nmon_repository of Nmon Splunk App
 NMON_REPOSITORY=${SPL_HOME}/etc/apps/nmon/var/nmon_repository
+[ ! -d $NMON_REPOSITORY ] && { mkdir -p $NMON_REPOSITORY; }
 
 # Refresh interval in seconds, Nmon will this value to refresh data each X seconds
 # Default to 30 seconds
