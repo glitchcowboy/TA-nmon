@@ -1,9 +1,12 @@
 #!/usr/bin/perl
+use File::Path qw(make_path remove_tree);
 # Program name: nmon2csv.pl
 # Purpose - convert nmon.csv file(s) into csv file
 # Author - Guilhem Marchand with code partially based on Bruce Spencer's perl mysql convert script
 # Disclaimer:  this provided "as is".  
 # Date - March 2014
+# Modified by Barak Griffis 05/06/2014
+# Add AIX support
 #
 $nmon2csv_ver="1.0.4 May 2014";
 
@@ -23,6 +26,8 @@ my $SPOOL_DIR="$SPLUNK_HOME/etc/apps/nmon/var/spool";
 #  Output directory of csv files to be consummated by Splunk
 my $OUTPUT_DIR="$SPLUNK_HOME/etc/apps/nmon/var/csv_repository";
 my $OUTPUTCONF_DIR="$SPLUNK_HOME/etc/apps/nmon/var/config_repository";
+
+make_path($SPOOL_DIR, $OUTPUT_DIR, $OUTPUTCONF_DIR);
 
 # sha1sum file referencing known NMON file
 my $MD5SUM_REF="$SPLUNK_HOME/etc/apps/nmon/var/md5sum_reference.txt";

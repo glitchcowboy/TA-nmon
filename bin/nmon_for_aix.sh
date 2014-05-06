@@ -1,4 +1,5 @@
 #!/bin/sh
+APPNAME="TA_nmon"
 
 # set -x
 
@@ -69,21 +70,29 @@ PIDs=$(ps -ef| grep "${nmon_command}" | grep -v grep |grep splunk| awk '{print $
 case ${PIDs} in
 
 	"" )
-	
-	 mv *.nmon ${NMON_REPOSITORY}/ >/dev/null
-		
-    # Start NMON
-    ${nmon_command} ;;
+		for file in $(ls ${WORKDIR}/*nmon);do mv $file ${NMON_REPOSITORY}/;done
+    		# Start NMON
+		# echo "starting nmon : ${nmon_command} in ${WORKDIR}"
+		${nmon_command}
+		for file in $(ls ${NMON_REPOSITORY}/*nmon)
+		do	
+			cat $file | $SPLUNK_HOME/etc/apps/$APPNAME/bin/nmon2csv.pl
+		done
+	;;
 	
 	* )
+		# Soft kill
+		kill ${PIDs}
+		sleep 2
+		for file in $(ls ${WORKDIR}/*nmon);do mv $file ${NMON_REPOSITORY}/;done
 	
-	# Soft kill
-	kill ${PIDs}
-	sleep 2
-	
-	mv *.nmon ${NMON_REPOSITORY}/ >/dev/null	
-	
-	# Start Nmon
-	${nmon_command} ;;
+		# Start Nmon
+		# echo "starting nmon : ${nmon_command} in ${WORKDIR}"
+		${nmon_command}
+		for file in $(ls NMON_REPOSITORY}/*nmon)
+		do	
+			cat $file | $SPLUNK_HOME/etc/apps/$APPNAME/bin/nmon2csv.pl
+		done
+	;;
 	
 esac
