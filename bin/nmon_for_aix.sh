@@ -64,7 +64,7 @@ fi
 
 # Search for any running Nmon instance, stop it if exist and start it, start it if does not
 cd ${WORKDIR}
-PIDs=$(ps -ef| grep "${nmon_command}" | grep -v grep |awk '{print $2}')
+PIDs=$(ps -ef| grep "${nmon_command}" | grep -v grep |grep splunk| awk '{print $2}')
 
 case ${PIDs} in
 
