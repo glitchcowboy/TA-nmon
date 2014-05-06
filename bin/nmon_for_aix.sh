@@ -70,29 +70,21 @@ PIDs=$(ps -ef| grep "${nmon_command}" | grep -v grep |grep splunk| awk '{print $
 case ${PIDs} in
 
 	"" )
-		for file in $(ls ${WORKDIR}/*nmon);do mv $file ${NMON_REPOSITORY}/;done
     		# Start NMON
+		mv *.nmon ${NMON_REPOSITORY}/ >/dev/null 2>&1
 		# echo "starting nmon : ${nmon_command} in ${WORKDIR}"
 		${nmon_command}
-		for file in $(ls ${NMON_REPOSITORY}/*nmon)
-		do	
-			cat $file | $SPLUNK_HOME/etc/apps/$APPNAME/bin/nmon2csv.pl
-		done
 	;;
 	
 	* )
 		# Soft kill
 		kill ${PIDs}
 		sleep 2
-		for file in $(ls ${WORKDIR}/*nmon);do mv $file ${NMON_REPOSITORY}/;done
 	
+		mv *.nmon ${NMON_REPOSITORY}/ >/dev/null 2>&1
 		# Start Nmon
 		# echo "starting nmon : ${nmon_command} in ${WORKDIR}"
 		${nmon_command}
-		for file in $(ls NMON_REPOSITORY}/*nmon)
-		do	
-			cat $file | $SPLUNK_HOME/etc/apps/$APPNAME/bin/nmon2csv.pl
-		done
 	;;
 	
 esac
