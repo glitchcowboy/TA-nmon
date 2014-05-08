@@ -12,14 +12,15 @@
 ## 	Your Customizations Go Here            ##
 #################################################
 
-if [ $(echo $SPLUNK_HOME|grep -q forwarder) ];then
+if [ ! $(echo $SPLUNK_HOME|grep -q forwarder) ];then
 	APP=$SPLUNK_HOME/etc/apps/TA-nmon
 elif [ -d $SPLUNK_HOME/etc/slave-apps/_cluster ];then 
 	APP=$SPLUNK_HOME/etc/slave-apps/PA-nmon
 else
-	APP=$SPLUNK_HOME/etc/apps/nmon
+	APP=$SPLUNK_HOME/etc/apps/nmon-for-splunk
 fi
 
+echo APP $APP
 
 # Splunk Home variable: This should automatically defined when this script is being launched by Splunk
 # If you intend to run this script out of Splunk, please set your custom value here

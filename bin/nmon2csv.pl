@@ -19,19 +19,31 @@ use Time::Local;
 # Default Environment Variable SPLUNK_HOME, this shall be automatically defined if as the script shall be launched by Splunk
 my $SPLUNK_HOME=$ENV{SPLUNK_HOME};
 
+my $APP="";
+
+if ( $SPLUNK_HOME =~ /.*splunkforwarder.*/) {
+	$APP="$SPLUNK_HOME/etc/apps/TA-nmon";	
+}elsif (-d "/opt/splunk/etc/slave-apps/_cluster" ){
+	$APP="$SPLUNK_HOME/etc/slave-apps/PA-nmon";
+}else{
+	$APP="$SPLUNK_HOME/etc/apps/nmon-for-splunk";
+}
+
+if ( ! -d $APP/var ) { mkdir $APP/var; }
+
 # Spool directory for NMON files processing
-my $SPOOL_DIR="$SPLUNK_HOME/etc/apps/nmon/var/spool";
+my $SPOOL_DIR="$APP/var/spool";
+if ( ! -d $SPOOL_DIR ) { print("Making $SPOOL_DIR");mkdir $SPOOL_DIR; }
 
 #  Output directory of csv files to be consummated by Splunk
-my $OUTPUT_DIR="$SPLUNK_HOME/etc/apps/nmon/var/csv_repository";
-my $OUTPUTCONF_DIR="$SPLUNK_HOME/etc/apps/nmon/var/config_repository";
+my $OUTPUT_DIR="$APP/var/csv_repository";
+if ( ! -d $OUTPUT_DIR ) { mkdir $OUTPUT_DIR; }
 
-mkdir $SPOOL_DIR;
-mkdir $OUTPUT_DIR;
-mkdir $OUTPUTCONF_DIR;
+my $OUTPUTCONF_DIR="$APP/var/config_repository";
+if ( ! -d $OUTPUTCONF_DIR ) { mkdir $OUTPUTCONF_DIR; } 
 
 # sha1sum file referencing known NMON file
-my $CKSUM_REF="$SPLUNK_HOME/etc/apps/nmon/var/cksum_reference.txt";
+my $CKSUM_REF="$APP/var/cksum_reference.txt";
 
 ####################################################################
 #############		Main Program 			############
@@ -52,6 +64,11 @@ if ( ! -d "$SPOOL_DIR" ) {
 # Verify existence of OUTPUT_DIR
 if ( ! -d "$OUTPUT_DIR" ) {
 	print ("\nERROR: Directory for csv output $OUTPUT_DIR does not exist !\n");
+	die;
+}
+# Verify existence of OUTPUT_DIR
+if ( ! -d "$OUTPUTCONF_DIR" ) {
+	print ("\nERROR: Directory for csv output $OUTPUTCONF_DIR does not exist !\n");
 	die;
 }
 
